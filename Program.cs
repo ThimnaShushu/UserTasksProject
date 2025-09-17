@@ -1,3 +1,5 @@
+//Code starts to execute from this file & run the API here
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -13,7 +15,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "UserTasks API v1");
+        options.RoutePrefix = "swagger";
+    });
+    
 }
 
 app.UseHttpsRedirection();
