@@ -14,6 +14,8 @@ namespace UserTasksProject.Data
 
         //Add a property for the collection(Users) we will store in the database
         public DbSet<User> Users { get; set; }
+        public DbSet<Tasks> Tasks { get; set; }
+
 
     }
 }

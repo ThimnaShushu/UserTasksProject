@@ -7,6 +7,8 @@
         public required string Username { get; set; } //made these properties to be required because all instances of this class must have these properties
         public required string Email { get; set; }
         public required string Password { get; set; }
-        
+
+        public ICollection<Tasks> AssignedTasks { get; set; } = new List<Tasks>(); // Navigation property to represent the one-to-many relationship with Tasks
+
     }
 }
