@@ -30,6 +30,22 @@ namespace UserTasksProject.Controllers
             return Ok(allUsers);
         }
 
+        //Get single user
+        [HttpGet]
+        [Route("{ID:guid}")]
+        public IActionResult GetUserByID(Guid ID)
+        {
+            var user = dbContext.Users.Find(ID);
+            
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
+
+        }
+
         //Add a new user
         [HttpPost]
         public IActionResult AddUser(AddUserDto addUserDto)
@@ -51,5 +67,50 @@ namespace UserTasksProject.Controllers
             return Ok(userEntity);
 
         }
+
+        //Update a user
+        [HttpPut]
+        [Route("{ID:guid}")]
+
+        public IActionResult UpdateUser(Guid ID, UpdateUserDto updateUserDto)
+        {
+            var user = dbContext.Users.Find(ID);
+            if (user is null)
+            {
+                return NotFound();
+            }
+            //update the properties of the existing user with the values from the updateUserDto
+            user.Username = updateUserDto.Username;
+            user.Email = updateUserDto.Email;
+            user.Password = updateUserDto.Password;
+            dbContext.SaveChanges(); //save the changes to the database
+            return Ok(user);
+        }
+
+
+
+
+
+        //Delete a user
+        [HttpDelete]
+        [Route("{ID:guid}")]
+
+
+        public IActionResult DeleteUser(Guid ID)
+        {
+            var user = dbContext.Users.Find(ID);
+
+            if(user is null)
+            {
+                return NotFound();
+            }
+            dbContext.Users.Remove(user);
+            dbContext.SaveChanges();
+
+            return Ok();
+        }
+
+
+
     }
 }
