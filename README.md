@@ -29,11 +29,7 @@ This project uses **Entity Framework Core** with **SQLite** and integrates **Swa
   - Expired tasks  
   - Active tasks  
   - Tasks by due date  
-  - Tasks by assigned user  
-- Optional authentication:
-  - API Key  
-  - JWT Bearer token  
-- Swagger UI for interactive API documentation  
+  - Tasks by assigned user 
 
 ---
 
@@ -42,7 +38,7 @@ This project uses **Entity Framework Core** with **SQLite** and integrates **Swa
 - ASP.NET Core Web API  
 - C# 11  
 - Entity Framework Core  
-- SQLite (for local development)  
+- SQL Server  
 - Swagger / Swashbuckle  
 
 ---
@@ -63,5 +59,5 @@ This project uses **Entity Framework Core** with **SQLite** and integrates **Swa
 
 ```json
 "ConnectionStrings": {
-  "DefaultConnection": "Data Source=usertasks.db"
+  "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=TestDb;Trusted_Connection=true;TrustServerCertificate=true;"
 }
