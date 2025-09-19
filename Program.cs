@@ -1,17 +1,24 @@
-//Code starts to execute from this file & run the API here
-
 using Microsoft.EntityFrameworkCore;
 using UserTasksProject.Data;
+using System.Text.Json.Serialization;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Handle circular references
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        // Optional: Make JSON more readable
+        options.JsonSerializerOptions.WriteIndented = true;
+    });
 
-builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//Inject DBContext callss to use be able to use inside controller and other application classes
+//Inject DBContext calls to use be able to use inside controller and other application classes
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 //fetches connection string from appsettings.json file
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -27,13 +34,9 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "UserTasks API v1");
         options.RoutePrefix = "swagger";
     });
-    
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
