@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using UserTasksProject.Data; // Make sure this matches the actual namespace of ApplicationDbContext
 using UserTasksProject.Models;
 using UserTasksProject.Models.Entities;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace UserTasksProject.Controllers
@@ -26,7 +27,7 @@ namespace UserTasksProject.Controllers
         [HttpGet]
         public IActionResult GetAllUsers()
         {
-            var allUsers = dbContext.Users.ToList();
+            var allUsers = dbContext.Users.Include(u => u.AssignedTasks).ToList();
             return Ok(allUsers);
         }
 
@@ -35,8 +36,8 @@ namespace UserTasksProject.Controllers
         [Route("{ID:guid}")]
         public IActionResult GetUserByID(Guid ID)
         {
-            var user = dbContext.Users.Find(ID);
-            
+            var user = dbContext.Users.Include(u => u.AssignedTasks).FirstOrDefault(u => u.ID == ID);
+
             if (user is null)
             {
                 return NotFound();

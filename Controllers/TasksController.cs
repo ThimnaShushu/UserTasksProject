@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
+using System;
 using UserTasksProject.Data; // Make sure this matches the actual namespace of ApplicationDbContext
 using UserTasksProject.Models;
 using UserTasksProject.Models.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace UserTasksProject.Controllers
 {
@@ -25,7 +27,7 @@ namespace UserTasksProject.Controllers
         [HttpGet]
         public IActionResult GetAllTasks()
         {
-            var allTasks = dbContext.Tasks.ToList();
+            var allTasks = dbContext.Tasks.Include(t => t.Assignee).ToList();
             return Ok(allTasks);
         }
 
@@ -35,7 +37,7 @@ namespace UserTasksProject.Controllers
         [Route("{ID:guid}")]
         public IActionResult GetTaskByID(Guid ID)
         {
-            var task = dbContext.Tasks.Find(ID);
+            var task = dbContext.Tasks.Include(t => t.Assignee).FirstOrDefault(t => t.ID == ID);
 
             if (task is null)
             {
@@ -58,7 +60,7 @@ namespace UserTasksProject.Controllers
                 
                 DueDate = addTaskDto.DueDate,
                 AssigneeID = addTaskDto.AssigneeID,
-                Assignee = addTaskDto.AssigneeUsername
+               // Assignee = addTaskDto.AssigneeUsername
                 //we did this because entities are separate from Dtos and therefore achieve a separation of concerns
 
             };
@@ -66,8 +68,10 @@ namespace UserTasksProject.Controllers
 
             dbContext.Tasks.Add(taskEntity);
             dbContext.SaveChanges(); //we need this because Entity Framework core wants us to save the changes ourselve, after this the changes are transferred to DB and the user is added
+            var createdTask = dbContext.Tasks.Include(t => t.Assignee).FirstOrDefault(t => t.ID == taskEntity.ID);
+            return Ok(createdTask);
 
-            return Ok(taskEntity);
+            
 
         }
 
@@ -87,10 +91,11 @@ namespace UserTasksProject.Controllers
             task.Description = updateTaskDto.Description;
             task.AssigneeID = updateTaskDto.AssigneeID;
             task.DueDate = updateTaskDto.DueDate;
-            task.Assignee = updateTaskDto.AssigneeUsername;
+            //task.Assignee = updateTaskDto.AssigneeUsername;
 
             dbContext.SaveChanges(); //save the changes to the database
-            return Ok(task);
+            var updatedTask = dbContext.Tasks.Include(t => t.Assignee).FirstOrDefault(t => t.ID == task.ID);
+            return Ok(updatedTask);
         }
 
 
@@ -115,6 +120,55 @@ namespace UserTasksProject.Controllers
 
             return Ok();
         }
+
+
+        [HttpGet("expired")]
+        public IActionResult GetExpiredTasks()
+        {
+            var expiredTasks = dbContext.Tasks
+                .Include(t => t.Assignee)
+                .Where(t => t.DueDate < DateTime.Today)
+                .ToList();
+
+            return Ok(expiredTasks);
+        }
+
+        // Get all active tasks (due date today or in the future)
+        [HttpGet("active")]
+        public IActionResult GetActiveTasks()
+        {
+            var activeTasks = dbContext.Tasks
+                .Include(t => t.Assignee)
+                .Where(t => t.DueDate >= DateTime.Today)
+                .ToList();
+
+            return Ok(activeTasks);
+        }
+
+        // Get all tasks from a certain date
+        [HttpGet("date/{date}")]
+        public IActionResult GetTasksByDate(DateTime date)
+        {
+            var tasks = dbContext.Tasks
+                .Include(t => t.Assignee)
+                .Where(t => t.DueDate.Date == date.Date)
+                .ToList();
+
+            return Ok(tasks);
+        }
+
+        // Get all tasks assigned to a specific user
+        [HttpGet("user/{userID}")]
+        public IActionResult GetTasksByUser(Guid userID)
+        {
+            var tasks = dbContext.Tasks
+                .Include(t => t.Assignee)
+                .Where(t => t.AssigneeID == userID)
+                .ToList();
+
+            return Ok(tasks);
+        }
+
     }
 }
 

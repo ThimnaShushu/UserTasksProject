@@ -8,7 +8,7 @@
         public required string Email { get; set; }
         public required string Password { get; set; }
 
-        public ICollection<Tasks> AssignedTasks { get; set; } = new List<Tasks>(); // Navigation property to represent the one-to-many relationship with Tasks
+        public virtual ICollection<Tasks> AssignedTasks { get; set; } = new List<Tasks>(); // Navigation property to represent the one-to-many relationship with Tasks
 
     }
 }

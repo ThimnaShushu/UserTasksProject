@@ -12,8 +12,8 @@ using UserTasksProject.Data;
 namespace UserTasksProject.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20250918175742_initialCreate")]
-    partial class initialCreate
+    [Migration("20250919114150_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

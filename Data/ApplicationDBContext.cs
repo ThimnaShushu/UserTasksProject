@@ -16,6 +16,17 @@ namespace UserTasksProject.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Tasks> Tasks { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Configure the relationship between User and Tasks
+            modelBuilder.Entity<Tasks>()
+                .HasOne(t => t.Assignee)
+                .WithMany(u => u.AssignedTasks)
+                .HasForeignKey(t => t.AssigneeID)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
 
     }
 }

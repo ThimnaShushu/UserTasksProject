@@ -9,9 +9,9 @@ namespace UserTasksProject.Models
         public required DateTime DueDate { get; set; }
 
         public required Guid AssigneeID { get; set; } // Navigation property to the User entity since each task belongs to one user
-        public User? AssigneeUsername
-        {
-            get; set;
-        }
+        //public User? AssigneeUsername
+        //{
+        //    get; set;
+        //}
     }
 }

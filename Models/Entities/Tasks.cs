@@ -8,7 +8,7 @@
         public required string Description { get; set; }
         public required DateTime DueDate { get; set; }
         public Guid AssigneeID { get; set; }
-        public User? Assignee { get; set; } // Navigation property to the User entity since each task belongs to one user
+        public virtual User? Assignee { get; set; } // Navigation property to the User entity since each task belongs to one user
         
     }
 }
